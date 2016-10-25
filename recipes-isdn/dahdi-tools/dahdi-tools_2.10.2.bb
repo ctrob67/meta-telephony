@@ -1,4 +1,4 @@
-DESCRITOPN = "Utilities for the DAHDI Asterisk Linux kernel drivers"
+DESCRIPTION = "Utilities for the DAHDI Asterisk Linux kernel drivers"
 HOMEPAGE = "http://www.asterisk.org"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "\
@@ -14,6 +14,7 @@ SRC_URI = "\
     file://0002-Use-sh-not-bash.patch \
     file://0003-Remove-Werror-from-Makefile.patch \
     file://dahdi.init.d \
+    file://0004-Use-LDFLAGS-for-so.patch \
 "
 
 SRC_URI[md5sum] = "6928cdf6f7710299ecbcacbac20d5c92"
