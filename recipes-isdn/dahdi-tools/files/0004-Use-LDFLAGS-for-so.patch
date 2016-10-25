@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index 1a5eefc..ef8b3c8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -177,7 +177,7 @@ $(LTZ_A): $(LTZ_A_OBJS)
+ 	ranlib $@
+ 
+ $(LTZ_SO): $(LTZ_SO_OBJS)
+-	$(CC) $(CFLAGS) -shared -Wl,-soname,$(LTZ_SO).$(LTZ_SO_MAJOR_VER).$(LTZ_SO_MINOR_VER) -o $@ $^ -lm
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,$(LTZ_SO).$(LTZ_SO_MAJOR_VER).$(LTZ_SO_MINOR_VER) -o $@ $^ -lm
+ 
+ dahdi_cfg: $(LTZ_A)
+ dahdi_cfg: LIBS+=-lm -lpthread
