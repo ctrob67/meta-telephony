@@ -7,6 +7,7 @@ LIC_FILES_CHKSUM = "\
 "
 
 DEPENDS = "dahdi-linux libnewt libusb"
+RDEPENDS_${PN} = "${MLPREFIX}initscripts-functions"
 
 SRC_URI = "\
     http://downloads.asterisk.org/pub/telephony/dahdi-tools/releases/dahdi-tools-${PV}.tar.gz \

@@ -4,6 +4,7 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3aa955c628d43053f8ba9569d173105a"
 
 DEPENDS += "jansson sqlite3 libedit alsa-lib util-linux"
+RDEPENDS_${PN} += "bash"
 
 SRC_URI = "\
     http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-${PV}.tar.gz \
