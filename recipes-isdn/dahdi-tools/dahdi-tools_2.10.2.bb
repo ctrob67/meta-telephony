@@ -41,6 +41,7 @@ do_install_append(){
     install -Dm 0755 ${WORKDIR}/dahdi.init.d ${D}${sysconfdir}/init.d/dahdi
     chown -R root:root ${D}${datadir}/dahdi/
     install -Dm 0644 ${WORKDIR}/dahdi.service ${D}/lib/systemd/system/dahdi.service
+    install -Dm 0755 ${WORKDIR}/dahdi.init.d ${D}usr/share/dahdi/dahdi-ctrl
 }
 
 FILES_${PN} += "${datadir}/dahdi"

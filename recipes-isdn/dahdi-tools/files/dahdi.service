@@ -2,8 +2,9 @@
 Description=DAHDI
 
 [Service]
-ExecStart=/usr/share/dahdi/start_dahdi
-ExecStart=/usr/share/dahdi/stop_dahdi
+ExecStart=/usr/share/dahdi/dahdi-ctrl start
+ExecStop=/usr/share/dahdi/dahdi-ctrl stop
+ExecReload=/usr/share/dahdi/dahdi-ctrl reload
 
 [Install]
 WantedBy=multi-user.target
