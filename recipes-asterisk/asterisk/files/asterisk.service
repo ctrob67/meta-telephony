@@ -1,0 +1,10 @@
+[Unit]
+Description=Asterisk PBX
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/share/dahdi/asterisk
+
+[Install]
+WantedBy=multi-user.target

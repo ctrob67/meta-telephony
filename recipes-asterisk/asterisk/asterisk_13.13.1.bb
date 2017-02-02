@@ -12,6 +12,7 @@ SRC_URI = "\
     file://0002-Use-pkgconfig-to-find-libxml2.patch \
     file://0003-Default-no-native.patch \
     file://asterisk.init.d \
+    file://asterisk.service \
 "
 
 SRC_URI[md5sum] = "a246f52661eec538a8af95a1e93a706e"
@@ -19,7 +20,9 @@ SRC_URI[sha256sum] = "6da3c46a22e919b92edf2ccb5b3a2f51bc17e8819e6fca704026869bf3
 
 S = "${WORKDIR}/asterisk-${PV}"
 
-inherit autotools pkgconfig useradd update-rc.d
+inherit autotools pkgconfig useradd update-rc.d systemd
+
+SYSTEMD_SERVICE_${PN} = "asterisk.service"
 
 # dora doesn't have autotools-brokensep. Still needed for sysmocom
 B = "${S}"
@@ -161,6 +164,7 @@ do_install_append() {
         chown -R asterisk:asterisk ${D}${localstatedir}/${x}/asterisk
         chmod -R u=rwX,g=rwX,o= ${D}${localstatedir}/${x}/asterisk
     done
+    install -Dm 0644 ${WORKDIR}/asterisk.service ${D}/lib/systemd/system/asterisk.service
 }
 
 FILES_${PN} += "\
