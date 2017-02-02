@@ -1,0 +1,76 @@
+#!/usr/sh
+
+# Don't edit the following values. Edit /etc/dahdi/init.conf instead.
+
+DAHDI_CFG=/usr/sbin/dahdi_cfg
+DAHDI_CFG_CMD=${DAHDI_CFG_CMD:-"$DAHDI_CFG"} # e.g: for a custom system.conf location
+
+FXOTUNE=/usr/sbin/fxotune
+
+# The maximal timeout (seconds) to wait for udevd to finish generating
+# device nodes after the modules have loaded and before running dahdi_cfg.
+DAHDI_DEV_TIMEOUT=20
+
+# A list of modules to unload when stopping.
+# All of their dependencies will be unloaded as well.
+DAHDI_UNLOAD_MODULES="dahdi"
+
+DAHDI_MODULES_FILE="/etc/dahdi/modules"
+
+load_modules() {
+  	# Some systems, e.g. Debian Lenny, add here -b, which will break
+	# loading of modules blacklisted in modprobe.d/*
+	unset MODPROBE_OPTIONS
+  	modules=`sed -e 's/#.*$//' $DAHDI_MODULES_FILE 2>/dev/null`
+	#if [ "$modules" = '' ]; then
+		# what?
+	#fi
+	echo "Loading DAHDI hardware modules:"
+	modprobe dahdi
+	for line in $modules; do
+		if [ $system = debian ]; then
+			echo -n "   ${line}: "
+			if modprobe $line 2> /dev/null; then
+				echo -n "done"
+			else
+				echo -n "error"
+			fi
+		elif [ $system = redhat ]; then
+			action "  ${line}: " modprobe $line
+		fi
+	done
+	echo ""
+}
+
+# Make sure that either dahdi is loaded or modprobe-able
+dahdi_modules_loadable() {
+	modinfo dahdi >/dev/null 2>&1 || lsmod | grep -q -w ^dahdi
+}
+
+if [ ! -x "$DAHDI_CFG" ]; then
+       echo "dahdi_cfg not executable"
+       exit 0
+fi
+
+RETVAL=0
+
+if ! dahdi_modules_loadable; then
+	echo "No DAHDI modules on the system. Not starting"
+	exit 0
+fi
+if hotplug_should_load_modules; then
+	load_modules
+fi
+
+TMOUT=$DAHDI_DEV_TIMEOUT # max secs to wait
+
+while [ ! -d /dev/dahdi ] ; do
+	sleep 1
+	TMOUT=`expr $TMOUT - 1`
+	if [ $TMOUT -eq 0 ] ; then
+		echo "Error: missing /dev/dahdi!"
+		exit 1
+	fi
+done
+
+exit $RETVAL

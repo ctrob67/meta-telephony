@@ -16,6 +16,7 @@ SRC_URI = "\
     file://0003-Remove-Werror-from-Makefile.patch \
     file://dahdi.init.d \
     file://0004-Use-LDFLAGS-for-so.patch \
+    file://dahdi.service \
 "
 
 SRC_URI[md5sum] = "6928cdf6f7710299ecbcacbac20d5c92"
@@ -23,7 +24,10 @@ SRC_URI[sha256sum] = "9e904815dedab231084c542d2d7d5dcc832ebec4b5d5d999a5d757df8b
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-inherit autotools pkgconfig perlnative cpan-base update-rc.d
+inherit autotools pkgconfig perlnative cpan-base update-rc.d systemd
+
+SYSTEMD_SERVICE_${PN} = "dahdi.service"
+
 # dora doesn't have autotools-brokensep. Still needed for sysmocom
 B = "${S}"
 
@@ -36,6 +40,7 @@ do_install_append(){
     oe_runmake DESTDIR=${D} config
     install -Dm 0755 ${WORKDIR}/dahdi.init.d ${D}${sysconfdir}/init.d/dahdi
     chown -R root:root ${D}${datadir}/dahdi/
+    install -Dm 0644 ${WORKDIR}/dahdi.service ${D}/lib/systemd/system/dahdi.service
 }
 
 FILES_${PN} += "${datadir}/dahdi"

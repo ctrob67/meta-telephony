@@ -1,0 +1,9 @@
+[Unit]
+Description=DAHDI
+
+[Service]
+ExecStart=/usr/share/dahdi/start_dahdi
+ExecStart=/usr/share/dahdi/stop_dahdi
+
+[Install]
+WantedBy=multi-user.target
