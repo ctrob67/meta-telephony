@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=forking
-ExecStart=/usr/share/dahdi/asterisk
+ExecStart=/usr/sbin/asterisk
 
 [Install]
 WantedBy=multi-user.target
