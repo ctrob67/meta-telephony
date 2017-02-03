@@ -16,7 +16,9 @@ SRC_URI = "\
     file://0003-Remove-Werror-from-Makefile.patch \
     file://dahdi.init.d \
     file://0004-Use-LDFLAGS-for-so.patch \
+    file://0005-fix-incompatibilities-in-hotplug-scripts.patch \
     file://dahdi.service \
+    file://dahdi-ctrl \
 "
 
 SRC_URI[md5sum] = "6928cdf6f7710299ecbcacbac20d5c92"
@@ -41,7 +43,7 @@ do_install_append(){
     install -Dm 0755 ${WORKDIR}/dahdi.init.d ${D}${sysconfdir}/init.d/dahdi
     chown -R root:root ${D}${datadir}/dahdi/
     install -Dm 0644 ${WORKDIR}/dahdi.service ${D}/lib/systemd/system/dahdi.service
-    install -Dm 0755 ${WORKDIR}/dahdi.init.d ${D}usr/share/dahdi/dahdi-ctrl
+    install -Dm 0755 ${WORKDIR}/dahdi-ctrl ${D}/usr/share/dahdi/dahdi-ctrl
 }
 
 FILES_${PN} += "${datadir}/dahdi"

@@ -1,20 +1,8 @@
-#!/usr/sh
+#!/bin/sh
 
 # Don't edit the following values. Edit /etc/dahdi/init.conf instead.
 
 DAHDI_CFG=/usr/sbin/dahdi_cfg
-DAHDI_CFG_CMD=${DAHDI_CFG_CMD:-"$DAHDI_CFG"} # e.g: for a custom system.conf location
-
-FXOTUNE=/usr/sbin/fxotune
-
-# The maximal timeout (seconds) to wait for udevd to finish generating
-# device nodes after the modules have loaded and before running dahdi_cfg.
-DAHDI_DEV_TIMEOUT=20
-
-# A list of modules to unload when stopping.
-# All of their dependencies will be unloaded as well.
-DAHDI_UNLOAD_MODULES="dahdi"
-
 DAHDI_MODULES_FILE="/etc/dahdi/modules"
 
 load_modules() {
@@ -28,15 +16,11 @@ load_modules() {
 	echo "Loading DAHDI hardware modules:"
 	modprobe dahdi
 	for line in $modules; do
-		if [ $system = debian ]; then
-			echo -n "   ${line}: "
-			if modprobe $line 2> /dev/null; then
-				echo -n "done"
-			else
-				echo -n "error"
-			fi
-		elif [ $system = redhat ]; then
-			action "  ${line}: " modprobe $line
+		echo -n "   ${line}: "
+		if modprobe $line 2> /dev/null; then
+			echo -n "done"
+		else
+			echo -n "error"
 		fi
 	done
 	echo ""
@@ -58,9 +42,8 @@ if ! dahdi_modules_loadable; then
 	echo "No DAHDI modules on the system. Not starting"
 	exit 0
 fi
-if hotplug_should_load_modules; then
-	load_modules
-fi
+
+load_modules
 
 TMOUT=$DAHDI_DEV_TIMEOUT # max secs to wait
 
@@ -72,5 +55,7 @@ while [ ! -d /dev/dahdi ] ; do
 		exit 1
 	fi
 done
+
+echo "/dev/dahdi present"
 
 exit $RETVAL

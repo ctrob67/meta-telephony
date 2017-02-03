@@ -1,0 +1,47 @@
+diff --git a/hotplug/dahdi_handle_device b/hotplug/dahdi_handle_device
+index 30329bd..6480b6b 100755
+--- a/hotplug/dahdi_handle_device
++++ b/hotplug/dahdi_handle_device
+@@ -7,7 +7,7 @@
+ 
+ me=`basename $0`
+ dir=`dirname $0`
+-LOGGER="logger -i -t '$me'"
++LOGGER="logger -t '$me'"
+ NAME=`basename "$DEVPATH" | tr -c 'A-Za-z0-9-' '_'`
+ 
+ # Always redirect stderr somewhere, otherwise the shell script will die
+diff --git a/hotplug/dahdi_span_config b/hotplug/dahdi_span_config
+index 25a10e2..62cf935 100755
+--- a/hotplug/dahdi_span_config
++++ b/hotplug/dahdi_span_config
+@@ -7,7 +7,7 @@
+ 
+ me=`basename $0`
+ dir=`dirname $0`
+-LOGGER="logger -i -t '$me'"
++LOGGER="logger -t '$me'"
+ NAME=`basename "$DEVPATH" | tr -c 'A-Za-z0-9-' '_'`
+ 
+ exec 2> /dev/null
+@@ -45,7 +45,7 @@ export DAHDICONFDIR
+ run_parts() {
+ 	# Have our internal "run-parts" (adapted from Fedora),
+ 	# as implementations differ
+-	for i in `LC_ALL=C; ls -d $dir/span_config.d/*[!~,] 2>/dev/null` ; do
++	for i in `LC_ALL=C; ls $dir/span_config.d/*[^!~,] 2>/dev/null` ; do
+ 		[ -d "$i" ] && continue
+ 		[ ! -x "$i" ] && continue
+ 		# Don't run *.{rpmsave,rpmorig,rpmnew,swp,cfsaved} files
+diff --git a/hotplug/span_config.d/50-asterisk b/hotplug/span_config.d/50-asterisk
+index 3b75899..b22b494 100755
+--- a/hotplug/span_config.d/50-asterisk
++++ b/hotplug/span_config.d/50-asterisk
+@@ -11,4 +11,7 @@ if [ "$ACTION" != 'add' ]; then
+ fi
+ 
+ # Add to asterisk
++# Cannot add channels that already exist so delete first.
++asterisk -rx "dahdi destroy channels $BASECHAN $ENDCHAN"
+ asterisk -rx "dahdi create channels $BASECHAN $ENDCHAN"
++
