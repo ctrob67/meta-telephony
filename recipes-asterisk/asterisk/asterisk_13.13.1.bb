@@ -152,6 +152,9 @@ do_configure_append() {
     CFLAGS="${HOST_CFLAGS}" \
     LDFLAGS="${HOST_LDFLAGS}" \
     ./configure
+
+    cd ${B}
+    make menuselect.makeopts
 }
 
 do_install_append() {
