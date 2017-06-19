@@ -67,76 +67,35 @@ SRC_URI[dahdi-fwload-vpmadt032.sha256sum] = "3ff26cf80555fd7470b43a87c51d03c1db2
 
 SRC_URI = "\
     http://downloads.asterisk.org/pub/telephony/dahdi-linux/releases/dahdi-linux-${PV}.tar.gz;name=dahdi-linux \
-    file://0001-Use-objcopy-from-toolchain.patch \
 "
 SRC_URI[dahdi-linux.md5sum] = "0281de245f4fa056f765ae2a6e1f1a4b"
 SRC_URI[dahdi-linux.sha256sum] = "6270444cb9b345941267b162038cc45f5ef4485139176e88e2c4d22fa35a2c59"
 
 SRC_URI =+ "${FIRMWARE_URI}"
 
+MODULES_INSTALL_TARGET="install"
+MODULES_MODULE_SYMVERS_LOCATION="drivers/dahdi"
+
 inherit module
 
 export TARGET_SYS
 EXTRA_OEMAKE += "KSRC=${STAGING_KERNEL_BUILDDIR}"
 
-do_configure() {
+do_configure_prepend() {
     # make sure the extracted firmware.bin are where Makefile expects
     cp ../*.bin drivers/dahdi/firmware/
     cp ${DL_DIR}/dahdi-fwload-*.tar.gz drivers/dahdi/firmware/
     cp ${DL_DIR}/dahdi-fw-*.tar.gz drivers/dahdi/firmware/
 }
 
-do_install() {
-    unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-    oe_runmake DEPMOD=echo DESTDIR="${D}" \
-        CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-        O=${STAGING_KERNEL_BUILDDIR} \
-        install
+do_install_prepend() {
+	export DESTDIR="${D}"
 }
 
-DAHDI_KERNEL_MODULE = "\
-    kernel-module-oct612x \
-    kernel-module-dahdi-echocan-jpah \
-    kernel-module-dahdi \
-    kernel-module-xpd-fxo \
-    kernel-module-wctdm \
-    kernel-module-dahdi-dynamic-loc \
-    kernel-module-xpp-usb \
-    kernel-module-xpp \
-    kernel-module-wcb4xxp \
-    kernel-module-wcte43x \
-    kernel-module-wctdm24xxp \
-    kernel-module-pciradio \
-    kernel-module-wcte12xp \
-    kernel-module-dahdi-voicebus \
-    kernel-module-dahdi-dynamic-ethmf \
-    kernel-module-dahdi-dynamic \
-    kernel-module-wctc4xxp \
-    kernel-module-dahdi-echocan-sec2 \
-    kernel-module-xpd-bri \
-    kernel-module-wcaxx \
-    kernel-module-dahdi-transcode \
-    kernel-module-wcte11xp \
-    kernel-module-dahdi-echocan-kb1 \
-    kernel-module-wcte13xp \
-    kernel-module-dahdi-dynamic-eth \
-    kernel-module-dahdi-echocan-mg2 \
-    kernel-module-wct1xx \
-    kernel-module-wct4xxp \
-    kernel-module-tor2 \
-    kernel-module-xpd-pri \
-    kernel-module-wct1xxp \
-    kernel-module-wcfxo \
-    kernel-module-dahdi-echocan-sec \
-    kernel-module-xpd-echo \
-    kernel-module-xpd-fxs \
-    kernel-module-dahdi-vpmadt032-loader \
-"
-
 PACKAGE_ARCH_dahdi-firmware = "all"
-PACKAGES =+ "dahdi-firmware ${DAHDI_KERNEL_MODULE}"
+PACKAGES =+ "dahdi-firmware"
 
-FILES_${PN} = "${base_libdir}/modules/ ${sysconfdir}/udev/rules.d"
+FILES_${PN} = "${sysconfdir}/udev/rules.d"
 FILES_dahdi-firmware = "${base_libdir}/firmware ${datadir}/dahdi ${libdir}/hotplug/firmware "
 
 RRECOMMENDS_${PN} = "dahdi-firmware"

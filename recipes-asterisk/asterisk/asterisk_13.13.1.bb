@@ -168,11 +168,14 @@ do_install_append() {
         chmod -R u=rwX,g=rwX,o= ${D}${localstatedir}/${x}/asterisk
     done
     install -Dm 0644 ${WORKDIR}/asterisk.service ${D}/lib/systemd/system/asterisk.service
+
+	# don't install to a dynamic files system
+	rm -rf ${D}/var/run	
 }
 
 FILES_${PN} += "\
-    /run/asterisk \
     ${datadir}/dahdi/* \
     ${libdir}/hotplug/firmware \
 "
+
 FILES_${PN}-dbg += "${libdir}/*/*/.debug"
