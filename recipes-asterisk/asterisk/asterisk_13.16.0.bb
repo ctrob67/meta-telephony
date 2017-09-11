@@ -164,15 +164,16 @@ do_install_append() {
     # Set file permissions and ownerships
     chown -R root:asterisk ${D}${sysconfdir}/asterisk
     chmod -R u=rwX,g=rwX,o= ${D}${sysconfdir}/asterisk
-    for x in spool run lib log; do
+    for x in spool lib log; do
         chown -R asterisk:asterisk ${D}${localstatedir}/${x}/asterisk
         chmod -R u=rwX,g=rwX,o= ${D}${localstatedir}/${x}/asterisk
     done
+    # This is sym-linked elsewhere to /run so this dir conflicts with symlink
+    rm -rf ${D}${localstatedir}/run
     install -Dm 0644 ${WORKDIR}/asterisk.service ${D}/lib/systemd/system/asterisk.service
 }
 
 FILES_${PN} += "\
-    /run/asterisk \
     ${datadir}/dahdi/* \
     ${libdir}/hotplug/firmware \
 "
