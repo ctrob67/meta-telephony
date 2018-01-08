@@ -171,6 +171,8 @@ do_install_append() {
     # This is sym-linked elsewhere to /run so this dir conflicts with symlink
     rm -rf ${D}${localstatedir}/run
     install -Dm 0644 ${WORKDIR}/asterisk.service ${D}/lib/systemd/system/asterisk.service
+    # Avoid installing over a symlink.
+    rm -rf ${D}/var/run
 }
 
 FILES_${PN} += "\
