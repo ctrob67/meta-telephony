@@ -136,7 +136,7 @@ DAHDI_KERNEL_MODULE = "\
 PACKAGE_ARCH_dahdi-firmware = "all"
 PACKAGES =+ "dahdi-firmware ${DAHDI_KERNEL_MODULE}"
 
-FILES_${PN} = "${base_libdir}/modules/ ${sysconfdir}/udev/rules.d"
+FILES_${PN} = "${sysconfdir}/udev/rules.d"
 FILES_dahdi-firmware = "${base_libdir}/firmware ${datadir}/dahdi ${libdir}/hotplug/firmware "
 
 RRECOMMENDS_${PN} = "dahdi-firmware"
